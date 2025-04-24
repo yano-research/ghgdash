@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { supabase } from '../lib/supabaseClient'
 import {
   ArrowTrendingUpIcon,
@@ -21,7 +22,7 @@ export default function DashboardPage() {
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true)
-      const { data, error } = await supabase.from('emissions3').select('*').limit(2)
+      const { data, error } = await supabase.from('emissions').select('*').limit(2)
       if (error) console.error('Error:', error)
       else setData(data)
       setLoading(false)
@@ -82,7 +83,11 @@ export default function DashboardPage() {
             <div className="text-gray-500">Loading...</div>
           ) : (
             data.map((item) => (
-              <div key={item.id} className="bg-white rounded-2xl p-6 shadow ring-1 ring-gray-200">
+              <Link
+                to={`/company/${item.name}`}
+                key={item.id}
+                className="bg-white rounded-2xl p-6 shadow ring-1 ring-gray-200 hover:ring-green-500 hover:shadow-md transition"
+              >
                 <h2 className="text-lg font-semibold text-gray-800 mb-2">{item.name}</h2>
                 <p className="text-sm text-gray-600 mb-1">
                   업종: <span className="text-gray-900 font-medium">{item.industry}</span>
@@ -93,7 +98,7 @@ export default function DashboardPage() {
                 <p className="text-sm text-gray-600">
                   총 배출량: <span className="text-gray-900 font-medium">{item.total_emission}</span>
                 </p>
-              </div>
+              </Link>
             ))
           )}
         </div>

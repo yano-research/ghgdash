@@ -1,7 +1,9 @@
-import { Routes, Route, Outlet } from 'react-router-dom'
+import { Routes, Route, Outlet,Link } from 'react-router-dom'
 import DashboardPage from './pages/DashboardPage'
 import SupabaseTestPage from './pages/SupabaseTestPage'
 import Sidebar from './components/Sidebar'
+import CompanyDetailPage from './pages/CompanyDetailPage'
+
 
 function Layout() {
   return (
@@ -19,6 +21,7 @@ export default function App() {
     <Routes>
       <Route path="/" element={<Layout />}>
         <Route index element={<DashboardPage />} />
+        <Route path="/company/:name" element={<CompanyDetailPage />} />
         <Route path="supabase-test" element={<SupabaseTestPage />} />
       </Route>
     </Routes>
