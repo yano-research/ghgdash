@@ -121,8 +121,11 @@ export default function CompanyDetailPage() {
           地域: <span className="text-gray-900 font-medium">{company.city || '情報なし'}</span>
         </p>
         <p className="text-sm text-gray-700 mb-1">
-          上場区分: <span className="text-gray-900 font-medium">{company.PLC || '情報なし'}</span>
-        </p>
+  上場区分:{' '}
+  <span className="text-gray-900 font-medium">
+    {company.plc === true ? '◯' : company.plc === false ? '×' : '情報なし'}
+  </span>
+</p>
         <p className="text-sm text-gray-700 mb-1">
         時価総額: <span className="text-gray-900 font-medium">
         {company.market_capitalization !== null && company.market_capitalization !== undefined
@@ -132,11 +135,11 @@ export default function CompanyDetailPage() {
 
         </p>
         <p className="text-sm text-gray-700">
-            算定範囲:{' '}
-            <span className="text-gray-900 font-medium">
-                {company.scope ? `Scope ${company.scope}` : '情報なし'}
-            </span>
-            </p>
+  算定範囲:{' '}
+  <span className="text-gray-900 font-medium">
+    {company.s2_self_area_2021 || '情報なし'}
+  </span>
+</p>
 
       </div>
 
@@ -164,7 +167,7 @@ export default function CompanyDetailPage() {
                     : 'bg-white text-gray-700 border-gray-300'
                 }`}
               >
-                gov
+                温対法データ
               </button>
               <button
                 onClick={() => {
@@ -177,7 +180,7 @@ export default function CompanyDetailPage() {
                     : 'bg-white text-gray-700 border-gray-300'
                 }`}
               >
-                self
+                自己申告データ
               </button>
             </div>
           </div>
