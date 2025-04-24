@@ -180,7 +180,7 @@ export default function DashboardPage() {
               setSearchQuery(half)
             }}
             placeholder="Search"
-            className="w-full rounded-md border border-gray-300 py-2 pl-10 pr-4 text-sm text-gray-900 placeholder-gray-400 shadow-sm focus:border-green-500 focus:ring-1 focus:ring-green-500"
+            className="w-full rounded-md border border-gray-300 py-2 pl-10 pr-4 text-sm text-gray-900 placeholder-gray-400 shadow-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
           />
           <div className="absolute inset-y-0 left-0 flex items-center pl-3">
             <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -219,7 +219,7 @@ export default function DashboardPage() {
           {cards.map((card, i) => (
             <div key={i} className="rounded-2xl bg-white px-6 py-5 shadow ring-1 ring-gray-200">
               <div className="flex items-center gap-x-4">
-                <card.icon className="h-6 w-6 text-green-600" />
+                <card.icon className="h-6 w-6 text-blue-600" />
                 <div>
                   <div className="text-sm text-gray-500">{card.name}</div>
                   <div className="text-xl font-bold text-gray-900">{card.stat}</div>
