@@ -10,10 +10,11 @@ export default function CompanyDetailPage() {
 
   useEffect(() => {
     const fetchCompany = async () => {
-      const { data, error } = await supabase
+        const { data, error } = await supabase
         .from('emissions')
         .select('*')
         .eq('name', name)
+        .not('gov_3yrs_avg', 'is', null) // gov_3yrs_avg가 null이 아닌 데이터만
         .limit(1)
         .maybeSingle()
 
@@ -91,7 +92,7 @@ export default function CompanyDetailPage() {
                 }}
                 className={`px-3 py-1 text-sm rounded-md border ${
                   dataSource === 'gov'
-                    ? 'bg-green-600 text-white'
+                    ? 'bg-blue-600 text-white'
                     : 'bg-white text-gray-700 border-gray-300'
                 }`}
               >
@@ -104,7 +105,7 @@ export default function CompanyDetailPage() {
                 }}
                 className={`px-3 py-1 text-sm rounded-md border ${
                   dataSource === 'self'
-                    ? 'bg-green-600 text-white'
+                    ? 'bg-blue-600 text-white'
                     : 'bg-white text-gray-700 border-gray-300'
                 }`}
               >

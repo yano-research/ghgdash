@@ -10,9 +10,6 @@ import {
   
   const navigation = [
     { name: 'Dashboard', icon: HomeIcon, path: '/' },
-    { name: 'Team', icon: UsersIcon, path: '/team' },
-    { name: 'Projects', icon: FolderIcon, path: '/projects' },
-    { name: 'Calendar', icon: CalendarIcon, path: '/calendar' },
     { name: 'Documents', icon: DocumentDuplicateIcon, path: '/documents' },
     { name: 'Reports', icon: ChartPieIcon, path: '/reports' },
   ]
