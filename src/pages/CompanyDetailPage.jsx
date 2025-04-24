@@ -37,36 +37,43 @@ export default function CompanyDetailPage() {
     fetchCompany()
   }, [name])
 
+  useEffect(() => {
+    setSelectedYear(dataSource === 'gov' ? '2019' : '2021')
+  }, [dataSource])
+
   const yearOptions = dataSource === 'gov'
     ? ['2019', '2020', '2021']
-    : ['2019', '2020', '2021', '2022', '2023', '2024', '2025']
+    : ['2021', '2022', '2023']
 
     const getValue = (scope) => {
-        if (!company) return '情報なし'
-      
-        if (dataSource === 'gov') {
-          const key = `${scope}_gov_${selectedYear}`
-          const value = company[key]
-      
-          if (value === null || value === undefined) return '情報なし'
-      
-          const parsed = parseFloat(value)
-          if (isNaN(parsed)) return value
-      
-          return Math.round(parsed).toLocaleString()
-        }
-      
-        // self 데이터 처리
-        const key = `${scope}_self_${selectedYear}`
-        const value = company[key]
-      
-        if (value === null || value === undefined) return '情報なし'
-      
-        const parsed = parseFloat(value)
-        if (isNaN(parsed)) return value
-      
-        return Math.round(parsed).toLocaleString()
-      }
+  if (!company) return '情報なし'
+
+  if (dataSource === 'gov') {
+    const key = `${scope}_gov_${selectedYear}`
+    const value = company[key]
+    if (value === null || value === undefined) return '情報なし'
+
+    const parsed = parseFloat(value)
+    if (isNaN(parsed)) return value
+
+    return Math.round(parsed).toLocaleString()
+  }
+
+  
+
+  // self 데이터 처리 (Scope 1~3)
+  const key = scope === 's3'
+    ? `s3_self_${selectedYear}`
+    : `${scope}_self_${selectedYear}`
+
+  const value = company[key]
+  if (value === null || value === undefined) return '情報なし'
+
+  const parsed = parseFloat(value)
+  if (isNaN(parsed)) return value
+
+  return Math.round(parsed).toLocaleString()
+}
 
         // Chart.js 컴포넌트 등록
   ChartJS.register(LineElement, CategoryScale, LinearScale, PointElement, Tooltip, Legend)
@@ -200,10 +207,41 @@ export default function CompanyDetailPage() {
             Scope 2: <span className="font-medium text-gray-900">{getValue('s2')}</span> 千t-CO₂
           </p>
           {dataSource === 'self' && (
-            <p className="text-sm text-gray-700">
-              Scope 3: <span className="font-medium text-gray-900">{getValue('s3')}</span> 千t-CO₂
+  <>
+    {(() => {
+      const locKey = `s2_self_location_${selectedYear}`
+      const marKey = `s2_self_market_${selectedYear}`
+      const locRaw = company[locKey]
+      const marRaw = company[marKey]
+      const locVal = parseFloat(locRaw)
+      const marVal = parseFloat(marRaw)
+
+      return (
+        <>
+          {!isNaN(locVal) && (
+            <p className="text-sm text-gray-700 mb-1">
+              Scope 2 (location): <span className="font-medium text-gray-900">{Math.round(locVal).toLocaleString()}</span> 千t-CO₂
             </p>
           )}
+          {!isNaN(marVal) && (
+            <p className="text-sm text-gray-700 mb-1">
+              Scope 2 (market): <span className="font-medium text-gray-900">{Math.round(marVal).toLocaleString()}</span> 千t-CO₂
+            </p>
+          )}
+          {isNaN(locVal) && isNaN(marVal) && (
+            <p className="text-sm text-gray-700 mb-1">
+              Scope 2: <span className="font-medium text-gray-900">情報なし</span>
+            </p>
+          )}
+        </>
+      )
+    })()}
+
+    <p className="text-sm text-gray-700">
+      Scope 3: <span className="font-medium text-gray-900">{getValue('s3')}</span> 千t-CO₂
+    </p>
+  </>
+)}
         </div>
 
         {/* 우측: 그래프 placeholder */}
