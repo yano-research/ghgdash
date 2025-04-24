@@ -32,11 +32,9 @@ export default function IndustryPage() {
           .not('gov_3yrs_avg', 'is', null) // 본사만
   
         if (!error && data) {
-          const mapped = data.map((item) => ({
-            ...item,
-            total: Math.round(Number(item.gov_2021) || 0), // 정수로 변환
-          }))
-          const sorted = mapped.sort((a, b) => b.total - a.total)
+          const sorted = data.sort(
+            (a, b) => (b.gov_2021 || 0) - (a.gov_2021 || 0)
+          )
           setCompanies(sorted)
         }
       }
@@ -73,7 +71,7 @@ export default function IndustryPage() {
             <tr>
               <th className="px-4 py-2 text-left font-medium text-gray-600">企業名</th>
               <th className="px-4 py-2 text-left font-medium text-gray-600">詳細業種</th>
-              <th className="px-4 py-2 text-left font-medium text-gray-600">2021年度　Scope1+2 (千t-Co2)</th>
+              <th className="px-4 py-2 text-left font-medium text-gray-600">2021年度　排出量(千t-Co2)</th>
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-100">
@@ -85,8 +83,11 @@ export default function IndustryPage() {
                   </Link>
                 </td>
                 <td className="px-4 py-2 text-gray-900">{c.industry3 || '-'}</td>
-                <td className="px-4 py-2 text-gray-900">{c.total}</td>
-              </tr>
+                <td className="px-4 py-2 text-gray-900">
+                    {c.gov_2021 !== null && c.gov_2021 !== undefined
+                        ? Math.round(c.gov_2021)
+                        : '情報なし'}
+                    </td>              </tr>
             ))}
           </tbody>
         </table>

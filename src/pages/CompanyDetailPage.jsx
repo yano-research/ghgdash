@@ -43,16 +43,29 @@ export default function CompanyDetailPage() {
 
     const getValue = (scope) => {
         if (!company) return '情報なし'
-        const key = `${scope}_${dataSource}_${selectedYear}`
-        if (key.endsWith('_3yrs_avg')) return '情報なし'
       
+        if (dataSource === 'gov') {
+          const key = `${scope}_gov_${selectedYear}`
+          const value = company[key]
+      
+          if (value === null || value === undefined) return '情報なし'
+      
+          const parsed = parseFloat(value)
+          if (isNaN(parsed)) return value
+      
+          return Math.round(parsed).toLocaleString()
+        }
+      
+        // self 데이터 처리
+        const key = `${scope}_self_${selectedYear}`
         const value = company[key]
+      
         if (value === null || value === undefined) return '情報なし'
       
         const parsed = parseFloat(value)
         if (isNaN(parsed)) return value
       
-        return Math.round(parsed).toLocaleString() // 또는 Math.floor(parsed) 도 가능
+        return Math.round(parsed).toLocaleString()
       }
 
         // Chart.js 컴포넌트 등록
