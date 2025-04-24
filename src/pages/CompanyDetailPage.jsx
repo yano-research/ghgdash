@@ -200,15 +200,61 @@ export default function CompanyDetailPage() {
           </div>
 
           {/* 값 표시 */}
-          <p className="text-sm text-gray-700 mb-1">
-            Scope 1: <span className="font-medium text-gray-900">{getValue('s1')}</span> 千t-CO₂
-          </p>
-          <p className="text-sm text-gray-700 mb-1">
-            Scope 2: <span className="font-medium text-gray-900">{getValue('s2')}</span> 千t-CO₂
-          </p>
+          <table className="min-w-full text-sm border border-gray-200 divide-y mb-2">
+  <thead className="bg-gray-50">
+    <tr>
+      <th className="px-4 py-2 text-left text-gray-600 font-medium">Scope</th>
+      <th className="px-4 py-2 text-left text-gray-600 font-medium">排出量 (千t-CO₂)</th>
+    </tr>
+  </thead>
+  <tbody className="bg-white divide-y divide-gray-100 text-gray-900">
+    {/* Scope 1 */}
+    <tr>
+      <td className="px-4 py-2">Scope 1</td>
+      <td className="px-4 py-2">{getValue('s1')}</td>
+    </tr>
+
+    {/* Scope 2 (self 탭만 조건 분기) */}
+    {dataSource === 'gov' ? (
+      <tr>
+        <td className="px-4 py-2">Scope 2</td>
+        <td className="px-4 py-2">{getValue('s2')}</td>
+      </tr>
+    ) : (
+      <>
+        {company[`s2_self_location_${selectedYear}`] != null && (
+          <tr>
+            <td className="px-4 py-2">Scope 2 (location)</td>
+            <td className="px-4 py-2">
+              {parseFloat(company[`s2_self_location_${selectedYear}`]).toLocaleString()}
+            </td>
+          </tr>
+        )}
+        {company[`s2_self_market_${selectedYear}`] != null && (
+          <tr>
+            <td className="px-4 py-2">Scope 2 (market)</td>
+            <td className="px-4 py-2">
+              {parseFloat(company[`s2_self_market_${selectedYear}`]).toLocaleString()}
+            </td>
+          </tr>
+        )}
+      </>
+    )}
+
+    {/* Scope 3 (self 탭일 때만 표시) */}
+    {dataSource === 'self' && (
+      <tr>
+        <td className="px-4 py-2">Scope 3</td>
+        <td className="px-4 py-2">{getValue('s3')}</td>
+      </tr>
+    )}
+  </tbody>
+</table>
+
+          
           {dataSource === 'self' && (
   <>
-    {(() => {
+    {/* {(() => {
       const locKey = `s2_self_location_${selectedYear}`
       const marKey = `s2_self_market_${selectedYear}`
       const locRaw = company[locKey]
@@ -235,11 +281,9 @@ export default function CompanyDetailPage() {
           )}
         </>
       )
-    })()}
+    })()} */}
 
-    <p className="text-sm text-gray-700">
-      Scope 3: <span className="font-medium text-gray-900">{getValue('s3')}</span> 千t-CO₂
-    </p>
+
   </>
 )}
         </div>
