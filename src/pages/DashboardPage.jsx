@@ -137,7 +137,7 @@ export default function DashboardPage() {
           labels: sorted.map(([industry]) => industry),
           datasets: [
             {
-              label: 'Scope 3 배출량 (2023)',
+              label: 'Scope 3 排出量 (2023)',
               data: sorted.map(([, value]) => value),
               borderColor: '#10b981',
               backgroundColor: '#10b981',
@@ -162,9 +162,9 @@ export default function DashboardPage() {
   }, [searchQuery, allCompanies])
 
   const cards = [
-    { name: '전체 등록 기업 수', stat: `${summary.companyCount}社`, icon: BuildingOfficeIcon },
-    { name: '업종 수', stat: `${summary.industryCount}種`, icon: BanknotesIcon },
-    { name: '가장 많이 등록된 업종', stat: summary.topIndustry, icon: ChartPieIcon },
+    { name: '登録企業数', stat: `${summary.companyCount}社`, icon: BuildingOfficeIcon },
+    { name: '業種数', stat: `${summary.industryCount}種`, icon: BanknotesIcon },
+    { name: '最も多く登録された業種', stat: summary.topIndustry, icon: ChartPieIcon },
   ]
 
   return (
@@ -230,7 +230,7 @@ export default function DashboardPage() {
         {/* 라인 그래프 */}
         {industryChartData && (
           <div className="mt-10 bg-white p-6 rounded-2xl shadow ring-1 ring-gray-200">
-            <h2 className="text-lg font-semibold text-gray-800 mb-4">업종별 Scope 3 배출량 (2023)</h2>
+            <h2 className="text-lg font-semibold text-gray-800 mb-4">業種別 Scope 3 排出量 (2023年)</h2>
             <Line data={industryChartData} />
           </div>
         )}

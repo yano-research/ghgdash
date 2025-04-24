@@ -42,12 +42,12 @@ export default function CompanyDetailPage() {
     : ['2019', '2020', '2021', '2022', '2023', '2024', '2025']
 
     const getValue = (scope) => {
-        if (!company) return '정보 없음'
+        if (!company) return '情報なし'
         const key = `${scope}_${dataSource}_${selectedYear}`
-        if (key.endsWith('_3yrs_avg')) return '정보 없음'
+        if (key.endsWith('_3yrs_avg')) return '情報なし'
       
         const value = company[key]
-        if (value === null || value === undefined) return '정보 없음'
+        if (value === null || value === undefined) return '情報なし'
       
         const parsed = parseFloat(value)
         if (isNaN(parsed)) return value
@@ -70,7 +70,7 @@ export default function CompanyDetailPage() {
       labels: years,
       datasets: [
         {
-          label: 'Scope 3 배출량 (千t-CO₂)',
+          label: 'Scope 3 排出量 (千t-CO₂)',
           data: values,
           borderColor: '#3B82F6',
           backgroundColor: 'rgba(59, 130, 246, 0.2)',
@@ -89,32 +89,41 @@ export default function CompanyDetailPage() {
   return (
     <div className="p-6">
       <h1 className="text-2xl font-bold text-gray-900 mb-2">{company.name}</h1>
-      <p className="text-gray-600 mb-6">{company.prefecture || '도시 정보 없음'}</p>
+      <p className="text-gray-600 mb-6">{company.prefecture || '도시 情報なし'}</p>
 
       {/* 기업 요약 카드 */}
       <div className="mb-6 bg-white p-4 rounded-xl shadow ring-1 ring-gray-200">
-        <h2 className="text-lg font-semibold text-gray-800 mb-2">기업 정보</h2>
+        <h2 className="text-lg font-semibold text-gray-800 mb-2">企業情報</h2>
         <p className="text-sm text-gray-700 mb-1">
-          업종: <span className="text-gray-900 font-medium">{company.industry} / {company.industry2} / {company.industry3}</span>
+          業種: <span className="text-gray-900 font-medium">{company.industry} / {company.industry2} / {company.industry3}</span>
         </p>
         <p className="text-sm text-gray-700 mb-1">
-          지역: <span className="text-gray-900 font-medium">{company.city || '정보 없음'}</span>
+          地域: <span className="text-gray-900 font-medium">{company.city || '情報なし'}</span>
         </p>
         <p className="text-sm text-gray-700 mb-1">
-          상장 여부: <span className="text-gray-900 font-medium">{company.PLC || '정보 없음'}</span>
+          上場区分: <span className="text-gray-900 font-medium">{company.PLC || '情報なし'}</span>
         </p>
         <p className="text-sm text-gray-700 mb-1">
-          시가총액: <span className="text-gray-900 font-medium">{company.market_capitalization || '정보 없음'}억엔</span>
+        時価総額: <span className="text-gray-900 font-medium">
+        {company.market_capitalization !== null && company.market_capitalization !== undefined
+            ? `${company.market_capitalization}億円`
+            : '情報なし'}
+        </span>
+
         </p>
         <p className="text-sm text-gray-700">
-          산정 범위: <span className="text-gray-900 font-medium">Scope {company.scope || '정보 없음'}</span>
-        </p>
+            算定範囲:{' '}
+            <span className="text-gray-900 font-medium">
+                {company.scope ? `Scope ${company.scope}` : '情報なし'}
+            </span>
+            </p>
+
       </div>
 
       {/* GHG 목표 카드 */}
       <div className="mb-6 bg-white p-4 rounded-xl shadow ring-1 ring-gray-200">
-        <h2 className="text-lg font-semibold mb-2">GHG 배출 목표</h2>
-        <p className="text-gray-700">{company.goal || '정보 없음'}</p>
+        <h2 className="text-lg font-semibold mb-2">GHG 削減目標</h2>
+        <p className="text-gray-700">{company.goal || '情報なし'}</p>
       </div>
 
       {/* 하단 카드 2개 */}
@@ -122,7 +131,7 @@ export default function CompanyDetailPage() {
         {/* 좌측: 연도별 S1/S2(+S3) + 기준 탭 */}
         <div className="bg-white p-4 rounded-xl shadow ring-1 ring-gray-200">
           <div className="flex justify-between items-center mb-4">
-            <h3 className="text-md font-semibold text-gray-800">GHG 배출량</h3>
+            <h3 className="text-md font-semibold text-gray-800">GHG 排出量</h3>
             <div className="flex gap-2">
               <button
                 onClick={() => {
@@ -186,7 +195,7 @@ export default function CompanyDetailPage() {
 
         {/* 우측: 그래프 placeholder */}
         <div className="bg-white p-4 rounded-xl shadow ring-1 ring-gray-200">
-            <h3 className="text-md font-semibold text-gray-800 mb-2">Scope 3 배출량 추이</h3>
+            <h3 className="text-md font-semibold text-gray-800 mb-2">Scope 3 排出量 推移</h3>
             <Line data={getS3ChartData()} />
         </div>
       </div>
