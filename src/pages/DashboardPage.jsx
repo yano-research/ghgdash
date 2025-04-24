@@ -8,19 +8,12 @@ import {
   ChartPieIcon,
 } from '@heroicons/react/24/outline'
 
-const cards = [
-  { name: '전체 등록 기업 수', stat: '120', icon: BuildingOfficeIcon },
-  { name: '총 배출량 (톤)', stat: '2,400,000', icon: BanknotesIcon },
-  { name: '가장 많은 업종', stat: '제조업', icon: ChartPieIcon },
-  { name: '배출량 상위 업종', stat: '화학', icon: ArrowTrendingUpIcon },
-]
-
 // 유틸 함수: 전각 영문 → 반각 영문으로 변환
 const toHalfWidth = (str) => {
-    return str.replace(/[Ａ-Ｚａ-ｚ０-９]/g, (ch) =>
-      String.fromCharCode(ch.charCodeAt(0) - 0xFEE0)
-    )
-  }
+  return str.replace(/[Ａ-Ｚａ-ｚ０-９]/g, (ch) =>
+    String.fromCharCode(ch.charCodeAt(0) - 0xFEE0)
+  )
+}
 
 export default function DashboardPage() {
   const [loading, setLoading] = useState(false)
@@ -28,6 +21,11 @@ export default function DashboardPage() {
   const [allCompanies, setAllCompanies] = useState([])
   const [searchQuery, setSearchQuery] = useState('')
   const [suggestions, setSuggestions] = useState([])
+  const [summary, setSummary] = useState({
+    companyCount: 0,
+    industryCount: 0,
+    topIndustry: '',
+  })
 
   useEffect(() => {
     const fetchData = async () => {
@@ -35,7 +33,7 @@ export default function DashboardPage() {
       const { data, error } = await supabase
         .from('emissions')
         .select('*')
-        .not('gov_3yrs_avg', 'is', null) // 본사만
+        .not('gov_3yrs_avg', 'is', null)
         .limit(2)
 
       if (error) console.error('Error:', error)
@@ -58,6 +56,36 @@ export default function DashboardPage() {
   }, [])
 
   useEffect(() => {
+    const fetchSummary = async () => {
+      const { data, error } = await supabase
+        .from('emissions')
+        .select('industry, gov_3yrs_avg')
+        .not('gov_3yrs_avg', 'is', null)
+
+      if (error) {
+        console.error('Summary fetch error:', error)
+        return
+      }
+
+      const industries = data.map(d => d.industry)
+      const industrySet = [...new Set(industries)]
+      const freq = industries.reduce((acc, cur) => {
+        acc[cur] = (acc[cur] || 0) + 1
+        return acc
+      }, {})
+      const top = Object.entries(freq).sort((a, b) => b[1] - a[1])[0][0]
+
+      setSummary({
+        companyCount: data.length,
+        industryCount: industrySet.length,
+        topIndustry: top,
+      })
+    }
+
+    fetchSummary()
+  }, [])
+
+  useEffect(() => {
     if (searchQuery.length > 0) {
       const filtered = allCompanies.filter(name =>
         name.toLowerCase().includes(searchQuery.toLowerCase())
@@ -68,21 +96,27 @@ export default function DashboardPage() {
     }
   }, [searchQuery, allCompanies])
 
+  const cards = [
+    { name: '전체 등록 기업 수', stat: `${summary.companyCount}社`, icon: BuildingOfficeIcon },
+    { name: '업종 수', stat: `${summary.industryCount}種`, icon: BanknotesIcon },
+    { name: '가장 많이 등록된 업종', stat: summary.topIndustry, icon: ChartPieIcon },
+  ]
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <div className="sticky top-0 z-30 flex items-center justify-between border-b bg-white px-6 py-4 shadow-sm">
         <div className="flex-1 relative w-full max-w-md">
-        <input
+          <input
             type="text"
             value={searchQuery}
             onChange={(e) => {
-                const half = toHalfWidth(e.target.value)
-                setSearchQuery(half)
+              const half = toHalfWidth(e.target.value)
+              setSearchQuery(half)
             }}
             placeholder="Search"
             className="w-full rounded-md border border-gray-300 py-2 pl-10 pr-4 text-sm text-gray-900 placeholder-gray-400 shadow-sm focus:border-green-500 focus:ring-1 focus:ring-green-500"
-            />
+          />
           <div className="absolute inset-y-0 left-0 flex items-center pl-3">
             <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-4.35-4.35M10 18a8 8 0 100-16 8 8 0 000 16z" />
@@ -117,7 +151,7 @@ export default function DashboardPage() {
         <h1 className="text-2xl font-semibold mb-6 text-gray-900">GHG Dashboard</h1>
 
         {/* Top Summary Cards */}
-        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {cards.map((card, i) => (
             <div key={i} className="rounded-2xl bg-white px-6 py-5 shadow ring-1 ring-gray-200">
               <div className="flex items-center gap-x-4">

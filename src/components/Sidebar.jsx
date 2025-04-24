@@ -9,9 +9,9 @@ import {
   import { useNavigate, useLocation } from 'react-router-dom'
   
   const navigation = [
-    { name: 'Dashboard', icon: HomeIcon, path: '/' },
-    { name: 'Documents', icon: DocumentDuplicateIcon, path: '/documents' },
-    { name: 'Reports', icon: ChartPieIcon, path: '/reports' },
+    { name: 'ダッシュボード', icon: HomeIcon, path: '/' },
+    { name: '業種別一覧', icon: DocumentDuplicateIcon, path: '/industry' },
+    { name: 'Scope3のチャート', icon: ChartPieIcon, path: '/scope3' },
   ]
   
   export default function Sidebar() {

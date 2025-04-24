@@ -3,6 +3,7 @@ import DashboardPage from './pages/DashboardPage'
 import SupabaseTestPage from './pages/SupabaseTestPage'
 import Sidebar from './components/Sidebar'
 import CompanyDetailPage from './pages/CompanyDetailPage'
+import IndustryListPage from './pages/IndustryListPage'
 
 
 function Layout() {
@@ -23,6 +24,7 @@ export default function App() {
         <Route index element={<DashboardPage />} />
         <Route path="/company/:name" element={<CompanyDetailPage />} />
         <Route path="supabase-test" element={<SupabaseTestPage />} />
+        <Route path="/industry" element={<IndustryListPage />} />
       </Route>
     </Routes>
   )
