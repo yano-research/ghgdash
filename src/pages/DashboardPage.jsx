@@ -21,7 +21,7 @@ export default function DashboardPage() {
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true)
-      const { data, error } = await supabase.from('emissions3').select('*').limit(5)
+      const { data, error } = await supabase.from('emissions3').select('*').limit(2)
       if (error) console.error('Error:', error)
       else setData(data)
       setLoading(false)
@@ -51,7 +51,6 @@ export default function DashboardPage() {
 
         {/* Right section */}
         <div className="ml-6 flex items-center gap-x-4">
-          
           <button className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700">
             Login
           </button>
@@ -61,6 +60,8 @@ export default function DashboardPage() {
       {/* Main Content */}
       <div className="p-6">
         <h1 className="text-2xl font-semibold mb-6 text-gray-900">GHG Dashboard</h1>
+
+        {/* Top Summary Cards */}
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
           {cards.map((card, i) => (
             <div key={i} className="rounded-2xl bg-white px-6 py-5 shadow ring-1 ring-gray-200">
@@ -75,32 +76,25 @@ export default function DashboardPage() {
           ))}
         </div>
 
-        {/* Table */}
-        <div className="mt-10">
-          <h2 className="text-lg font-semibold text-gray-800 mb-3">최근 등록된 데이터</h2>
+        {/* Recent Data Cards */}
+        <div className="mt-10 grid grid-cols-1 gap-6 lg:grid-cols-2">
           {loading ? (
             <div className="text-gray-500">Loading...</div>
           ) : (
-            <table className="min-w-full divide-y divide-gray-200 text-sm">
-              <thead className="bg-gray-50">
-                <tr>
-                  <th className="px-3 py-2 text-left font-medium text-gray-600">기업명</th>
-                  <th className="px-3 py-2 text-left font-medium text-gray-600">업종</th>
-                  <th className="px-3 py-2 text-left font-medium text-gray-600">Scope</th>
-                  <th className="px-3 py-2 text-left font-medium text-gray-600">총 배출량</th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {data.map((item) => (
-                  <tr key={item.id}>
-                    <td className="px-3 py-2 text-gray-900">{item.name}</td>
-                    <td className="px-3 py-2 text-gray-900">{item.industry}</td>
-                    <td className="px-3 py-2 text-gray-900">{item.scope}</td>
-                    <td className="px-3 py-2 text-gray-900">{item.total_emission}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+            data.map((item) => (
+              <div key={item.id} className="bg-white rounded-2xl p-6 shadow ring-1 ring-gray-200">
+                <h2 className="text-lg font-semibold text-gray-800 mb-2">{item.name}</h2>
+                <p className="text-sm text-gray-600 mb-1">
+                  업종: <span className="text-gray-900 font-medium">{item.industry}</span>
+                </p>
+                <p className="text-sm text-gray-600 mb-1">
+                  Scope: <span className="text-gray-900 font-medium">{item.scope}</span>
+                </p>
+                <p className="text-sm text-gray-600">
+                  총 배출량: <span className="text-gray-900 font-medium">{item.total_emission}</span>
+                </p>
+              </div>
+            ))
           )}
         </div>
       </div>
