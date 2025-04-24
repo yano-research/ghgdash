@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabaseClient'
+import { Link } from 'react-router-dom'
 
 export default function IndustryPage() {
   const [industries, setIndustries] = useState([])
@@ -29,14 +30,18 @@ export default function IndustryPage() {
           .select('name, industry3, s1_gov_2021, s2_gov_2021')
           .eq('industry', selectedIndustry)
           .not('gov_3yrs_avg', 'is', null) // 본사만
-
+  
         if (!error && data) {
-          setCompanies(
-            data.map((item) => ({
+          const mapped = data.map((item) => {
+            const s1 = Number(item.s1_gov_2021) || 0
+            const s2 = Number(item.s2_gov_2021) || 0
+            return {
               ...item,
-              total: (item.s1_gov_2021 || 0) + (item.s2_gov_2021 || 0),
-            }))
-          )
+              total: Math.round(s1 + s2),
+            }
+          })
+          const sorted = mapped.sort((a, b) => b.total - a.total)
+          setCompanies(sorted)
         }
       }
       fetchCompanies()
@@ -78,7 +83,11 @@ export default function IndustryPage() {
           <tbody className="bg-white divide-y divide-gray-100">
             {companies.map((c, i) => (
               <tr key={i}>
-                <td className="px-4 py-2 text-gray-900">{c.name}</td>
+                <td className="px-4 py-2 text-gray-900">
+                  <Link to={`/company/${c.name}`} className="text-blue-900 hover:underline">
+                    {c.name}
+                  </Link>
+                </td>
                 <td className="px-4 py-2 text-gray-900">{c.industry3 || '-'}</td>
                 <td className="px-4 py-2 text-gray-900">{c.total}</td>
               </tr>
