@@ -1,6 +1,18 @@
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { supabase } from '../lib/supabaseClient'
+import {
+    Chart as ChartJS,
+    LineElement,
+    CategoryScale,
+    LinearScale,
+    PointElement,
+    Tooltip,
+    Legend,
+  } from 'chart.js'
+  import { Line } from 'react-chartjs-2'
+  
+
 
 export default function CompanyDetailPage() {
   const { name } = useParams()
@@ -42,6 +54,33 @@ export default function CompanyDetailPage() {
       
         return Math.round(parsed).toLocaleString() // 또는 Math.floor(parsed) 도 가능
       }
+
+        // Chart.js 컴포넌트 등록
+  ChartJS.register(LineElement, CategoryScale, LinearScale, PointElement, Tooltip, Legend)
+
+  const getS3ChartData = () => {
+    const years = ['2021', '2022', '2023']
+    const values = years.map((y) => {
+      const key = `s3_self_${y}`
+      const val = parseFloat(company?.[key])
+      return isNaN(val) ? null : val
+    })
+  
+    return {
+      labels: years,
+      datasets: [
+        {
+          label: 'Scope 3 배출량 (千t-CO₂)',
+          data: values,
+          borderColor: '#3B82F6',
+          backgroundColor: 'rgba(59, 130, 246, 0.2)',
+          tension: 0.3,
+          pointRadius: 4,
+          pointBackgroundColor: '#3B82F6',
+        },
+      ],
+    }
+  }
 
   if (!company) {
     return <div className="p-6 text-gray-500">Loading company data...</div>
@@ -146,8 +185,9 @@ export default function CompanyDetailPage() {
         </div>
 
         {/* 우측: 그래프 placeholder */}
-        <div className="bg-white p-4 rounded-xl shadow ring-1 ring-gray-200 h-64 flex items-center justify-center">
-          <span className="text-gray-400">[그래프 영역 - 추후 구현]</span>
+        <div className="bg-white p-4 rounded-xl shadow ring-1 ring-gray-200">
+            <h3 className="text-md font-semibold text-gray-800 mb-2">Scope 3 배출량 추이</h3>
+            <Line data={getS3ChartData()} />
         </div>
       </div>
     </div>
