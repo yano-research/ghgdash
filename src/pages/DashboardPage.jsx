@@ -29,17 +29,29 @@ export default function DashboardPage() {
 
   useEffect(() => {
     const fetchData = async () => {
-      setLoading(true)
-      const { data, error } = await supabase
-        .from('emissions')
-        .select('*')
-        .not('gov_3yrs_avg', 'is', null)
-        .limit(2)
-
-      if (error) console.error('Error:', error)
-      else setData(data)
-      setLoading(false)
-    }
+        setLoading(true)
+      
+        const { data, error } = await supabase
+          .from('emissions')
+          .select('*')
+          .order('gov_2019', { ascending: false })
+          .then((res) => {
+            if (res.error) throw res.error
+            const seen = new Set()
+            // 이름이 같은 기업 중 gov_2019 가장 큰 값만 선택
+            const filtered = res.data.filter((d) => {
+              if (seen.has(d.name)) return false
+              seen.add(d.name)
+              return true
+            })
+            return { data: filtered }
+          })
+      
+        if (error) console.error('Error:', error)
+        else setData(data)
+      
+        setLoading(false)
+      }
     fetchData()
   }, [])
 

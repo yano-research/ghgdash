@@ -27,19 +27,15 @@ export default function IndustryPage() {
       const fetchCompanies = async () => {
         const { data, error } = await supabase
           .from('emissions')
-          .select('name, industry3, s1_gov_2021, s2_gov_2021')
+          .select('name, industry3, gov_2021')
           .eq('industry', selectedIndustry)
           .not('gov_3yrs_avg', 'is', null) // 본사만
   
         if (!error && data) {
-          const mapped = data.map((item) => {
-            const s1 = Number(item.s1_gov_2021) || 0
-            const s2 = Number(item.s2_gov_2021) || 0
-            return {
-              ...item,
-              total: Math.round(s1 + s2),
-            }
-          })
+          const mapped = data.map((item) => ({
+            ...item,
+            total: Math.round(Number(item.gov_2021) || 0), // 정수로 변환
+          }))
           const sorted = mapped.sort((a, b) => b.total - a.total)
           setCompanies(sorted)
         }
@@ -77,7 +73,7 @@ export default function IndustryPage() {
             <tr>
               <th className="px-4 py-2 text-left font-medium text-gray-600">企業名</th>
               <th className="px-4 py-2 text-left font-medium text-gray-600">詳細業種</th>
-              <th className="px-4 py-2 text-left font-medium text-gray-600">Scope1+2 (2021)</th>
+              <th className="px-4 py-2 text-left font-medium text-gray-600">2021年度　Scope1+2 (千t-Co2)</th>
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-100">
