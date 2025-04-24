@@ -4,7 +4,7 @@ import SupabaseTestPage from './pages/SupabaseTestPage'
 import Sidebar from './components/Sidebar'
 import CompanyDetailPage from './pages/CompanyDetailPage'
 import IndustryListPage from './pages/IndustryListPage'
-
+import LoginPage from './pages/LoginPage'
 
 function Layout() {
   return (
@@ -26,6 +26,7 @@ export default function App() {
         <Route path="supabase-test" element={<SupabaseTestPage />} />
         <Route path="/industry" element={<IndustryListPage />} />
       </Route>
+      <Route path="/login" element={<LoginPage />} />
     </Routes>
   )
 }
