@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { supabase } from '../lib/supabaseClient'
 import {
   ArrowTrendingUpIcon,
@@ -7,7 +7,6 @@ import {
   BuildingOfficeIcon,
   ChartPieIcon,
 } from '@heroicons/react/24/outline'
-
 import { Line } from 'react-chartjs-2'
 import {
   Chart as ChartJS,
@@ -28,7 +27,6 @@ ChartJS.register(
   Legend
 )
 
-// 유틸 함수: 전각 영문 → 반각 영문으로 변환
 const toHalfWidth = (str) => {
   return str.replace(/[Ａ-Ｚａ-ｚ０-９]/g, (ch) =>
     String.fromCharCode(ch.charCodeAt(0) - 0xFEE0)
@@ -36,6 +34,7 @@ const toHalfWidth = (str) => {
 }
 
 export default function DashboardPage() {
+  const navigate = useNavigate()
   const [loading, setLoading] = useState(false)
   const [data, setData] = useState([])
   const [allCompanies, setAllCompanies] = useState([])
@@ -47,6 +46,22 @@ export default function DashboardPage() {
     topIndustry: '',
   })
   const [industryChartData, setIndustryChartData] = useState(null)
+  const handleLogout = async () => {
+    await supabase.auth.signOut()
+    navigate('/login') // 로그아웃 후 로그인 페이지로 이동
+  }
+  // ✅ 로그인 체크
+  useEffect(() => {
+    const checkSession = async () => {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession()
+      if (!session) {
+        navigate('/login')
+      }
+    }
+    checkSession()
+  }, [])
 
   useEffect(() => {
     const fetchData = async () => {
@@ -203,18 +218,17 @@ export default function DashboardPage() {
           )}
         </div>
         <div className="ml-6 flex items-center gap-x-4">
-        <Link to="/login">
-        <button className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700">
-            Login
-        </button>
-        </Link>
-        </div>
+  <button
+    onClick={handleLogout}
+    className="rounded-md bg-gray-300 px-4 py-2 text-sm font-medium text-gray-800 hover:bg-gray-400"
+  >
+    Logout
+  </button>
+</div>
       </div>
 
       {/* Main Content */}
       <div className="p-6">
-        {/* <h1 className="text-2xl font-semibold mb-6 text-gray-900">GHG Dashboard</h1> */}
-
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {cards.map((card, i) => (
             <div key={i} className="rounded-2xl bg-white px-6 py-5 shadow ring-1 ring-gray-200">

@@ -1,17 +1,26 @@
 // src/pages/LoginPage.jsx
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { supabase } from '../lib/supabaseClient'
 
 export default function LoginPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const navigate = useNavigate()
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    // TODO: 실제 로그인 로직 처리
-    console.log('로그인 요청:', email, password)
-    navigate('/') // 로그인 후 메인 페이지로 이동
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    })
+  
+    if (error) {
+      alert('로그인 실패: ' + error.message)
+    } else {
+      console.log('로그인 성공:', data)
+      navigate('/') // 로그인 성공 시 메인 페이지로 이동
+    }
   }
 
   return (
