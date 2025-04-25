@@ -27,15 +27,30 @@ export default function Scope3ChartPage() {
 
   useEffect(() => {
     const fetchCompanies = async () => {
-      const { data } = await supabase
+      const years = ['2021', '2022', '2023']
+      const cols = years.flatMap(y =>
+        Array.from({ length: 15 }, (_, i) => `s3_self_c${i + 1}_${y}`)
+      )
+  
+      const { data, error } = await supabase
         .from('emissions')
-        .select('name')
-      if (data) {
-        const unique = [...new Set(data.map(d => d.name))]
-        setCompanies(unique)
-        setSelectedCompany(unique[0])
+        .select(['name', ...cols].join(','))
+  
+      if (error) {
+        console.error('Error fetching companies:', error)
+        return
       }
+  
+      // ✅ 최소 하나라도 값이 있는 기업만 필터링
+      const filtered = data.filter(company =>
+        cols.some(col => company[col] !== null && !isNaN(company[col]))
+      )
+  
+      const unique = [...new Set(filtered.map(d => d.name))]
+      setCompanies(unique)
+      setSelectedCompany(unique[0])
     }
+  
     fetchCompanies()
   }, [])
 
@@ -62,8 +77,10 @@ export default function Scope3ChartPage() {
             borderWidth: 2,
             fill: false,
             tension: 0.3,
+            borderColor: ['#3B82F6', '#F59E0B', '#10B981'][yIdx],
+            backgroundColor: ['#3B82F6', '#F59E0B', '#10B981'][yIdx],
           }))
-
+        
           setLineData({
             labels: categories,
             datasets,

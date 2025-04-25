@@ -22,8 +22,12 @@ import {
       <div className="flex h-full flex-col bg-gray-900 text-white w-64">
         {/* Logo */}
         <div className="flex h-16 items-center justify-center border-b border-gray-800">
-          <img src="https://tailwindcss.com/_next/static/media/mark.7b5a945f.svg" alt="Logo" className="h-6" />
-        </div>
+        <img
+          className="mx-auto h-10 w-auto"
+          src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=500"
+          alt="Your Company"
+        />
+      </div>
   
         {/* Menu */}
         <nav className="flex flex-1 flex-col p-4">
