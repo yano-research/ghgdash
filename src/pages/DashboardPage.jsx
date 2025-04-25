@@ -207,11 +207,11 @@ export default function DashboardPage() {
               {suggestions.map((name, i) => (
                 <li key={i}>
                   <Link
-                    to={`/company/${name}`}
-                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                  >
-                    {name}
-                  </Link>
+  to={`/company/${encodeURIComponent(name)}`}
+  className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+>
+  {name}
+</Link>
                 </li>
               ))}
             </ul>

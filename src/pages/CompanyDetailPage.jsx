@@ -19,13 +19,15 @@ export default function CompanyDetailPage() {
   const [company, setCompany] = useState(null)
   const [selectedYear, setSelectedYear] = useState('2019')
   const [dataSource, setDataSource] = useState('gov') // 'gov' 또는 'self'
+  const decodedName = decodeURIComponent(name)
+
 
   useEffect(() => {
     const fetchCompany = async () => {
         const { data, error } = await supabase
         .from('emissions')
         .select('*')
-        .eq('name', name)
+        .eq('name', decodedName)
         .not('gov_3yrs_avg', 'is', null) // gov_3yrs_avg가 null이 아닌 데이터만
         .limit(1)
         .maybeSingle()
