@@ -213,6 +213,17 @@ export default function CompanyDetailPage() {
     </tr>
   </thead>
   <tbody className="bg-white divide-y divide-gray-100 text-gray-900">
+    {/* Scope 1 + 2 (gov 전용) */}
+  {dataSource === 'gov' && (
+    <tr>
+      <td className="px-4 py-2 font-medium">Scope 1 + 2</td>
+      <td className="px-4 py-2">
+        {company[`gov_${selectedYear}`] != null
+          ? parseFloat(company[`gov_${selectedYear}`]).toLocaleString()
+          : '情報なし'}
+      </td>
+    </tr>
+  )}
     {/* Scope 1 */}
     <tr>
       <td className="px-4 py-2">Scope 1</td>
