@@ -186,7 +186,7 @@ export default function Scope3ChartPage() {
       {tab === 'category' && (
         <>
           <div className="mb-4">
-          <div className='text-sm mb-2 text-gray-500'>2021年基準</div>
+          <div className='text-sm mb-2 text-gray-500'>2021年基準(千t-CO2単位)</div>
             <select
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value)}
